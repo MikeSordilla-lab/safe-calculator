@@ -1,5 +1,15 @@
-import flet as ft
+"""
+Safe Days Calculator - A mobile app for tracking fertility cycles.
+
+This application uses the rhythm method to calculate fertile and safe days
+based on the user's last menstrual period and average cycle length.
+
+Note: This is for educational purposes only and should not be used as
+a sole method of contraception or medical advice.
+"""
 import datetime
+
+import flet as ft
 
 # --- Logic from your original script ---
 
@@ -40,6 +50,12 @@ def calculate_cycle_data(lmp_date, cycle_length):
 
 
 def main(page: ft.Page):
+    """
+    Main application entry point for the Safe Days Calculator.
+
+    Args:
+        page (ft.Page): The Flet page object for the application.
+    """
     page.title = "Safe Days Calculator"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.window_width = 390  # Approximate width of a mobile phone
@@ -88,7 +104,7 @@ def main(page: ft.Page):
     # Results Container
     results_column = ft.Column(visible=False)
 
-    def calculate_click(e):
+    def calculate_click(_e):
         try:
             cycle_len = int(cycle_slider.value)
 
@@ -136,10 +152,20 @@ def main(page: ft.Page):
 
                 ft.Container(
                     content=ft.Column([
-                        ft.Row([ft.Icon(ft.Icons.CHILD_CARE, color=ft.Colors.WHITE), ft.Text(
-                            "Fertile Window (High Risk)", color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD)]),
+                        ft.Row([
+                            ft.Icon(ft.Icons.CHILD_CARE, color=ft.Colors.WHITE),
+                            ft.Text(
+                                "Fertile Window (High Risk)",
+                                color=ft.Colors.WHITE,
+                                weight=ft.FontWeight.BOLD
+                            )
+                        ]),
                         ft.Text(
-                            f"{data['fertile_start'].strftime(fmt)} - {data['fertile_end'].strftime(fmt)}", color=ft.Colors.WHITE, size=16)
+                            f"{data['fertile_start'].strftime(fmt)} - "
+                            f"{data['fertile_end'].strftime(fmt)}",
+                            color=ft.Colors.WHITE,
+                            size=16
+                        )
                     ]),
                     bgcolor=ft.Colors.ORANGE_400,
                     padding=15,
@@ -171,8 +197,24 @@ def main(page: ft.Page):
             results_column.visible = True
             page.update()
 
-        except Exception as ex:
-            print(f"Error: {ex}")
+        except (ValueError, AttributeError, TypeError) as ex:
+            # Show error message to user
+            results_column.controls.clear()
+            results_column.controls.append(
+                ft.Container(
+                    content=ft.Text(
+                        f"Error calculating cycle data: {ex}",
+                        color=ft.Colors.RED,
+                        weight=ft.FontWeight.BOLD
+                    ),
+                    bgcolor=ft.Colors.RED_50,
+                    padding=15,
+                    border_radius=10,
+                    width=300
+                )
+            )
+            results_column.visible = True
+            page.update()
 
     calc_button = ft.ElevatedButton(
         "Calculate Safe Days",
