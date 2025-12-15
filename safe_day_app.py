@@ -197,16 +197,25 @@ def main(page: ft.Page):
             results_column.visible = True
             page.update()
 
-        except (ValueError, AttributeError, TypeError) as ex:
-            # Show error message to user
+        except ValueError:
+            # Show user-friendly error message for invalid input
             results_column.controls.clear()
             results_column.controls.append(
                 ft.Container(
-                    content=ft.Text(
-                        f"Error calculating cycle data: {ex}",
-                        color=ft.Colors.RED,
-                        weight=ft.FontWeight.BOLD
-                    ),
+                    content=ft.Column([
+                        ft.Text(
+                            "Unable to calculate cycle data",
+                            color=ft.Colors.RED,
+                            weight=ft.FontWeight.BOLD,
+                            size=16
+                        ),
+                        ft.Text(
+                            "Please ensure you have selected a valid date "
+                            "and cycle length.",
+                            color=ft.Colors.RED_700,
+                            size=14
+                        )
+                    ]),
                     bgcolor=ft.Colors.RED_50,
                     padding=15,
                     border_radius=10,
